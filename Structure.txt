@@ -1,0 +1,116 @@
+🧠 What Is Active-Active?
+
+In a normal single-region application:
+
+                 Users
+                   │
+                   ▼
+              Load Balancer
+                   │
+                   ▼
+              Region 1
+                   │
+            ┌──────┴──────┐
+            ▼             ▼
+         Flask         Database
+
+If Region 1 goes down:
+Users
+  │
+  ▼
+❌ Region 1
+
+With Active-Active:
+
+                         Users
+                           │
+                           ▼
+                    Global DNS / LB
+                      /           \
+                     /             \
+                    ▼               ▼
+              Region A          Region B
+              Mumbai            Singapore
+                 │                 │
+              Flask             Flask
+                 │                 │
+                 └───────┬─────────┘
+                         ▼
+                  Distributed Data
+
+Both regions are active at the same time.
+
+🎯 Goals
+
+The architecture should provide:
+
+✅ High availability
+✅ Geographic redundancy
+✅ Low latency
+✅ Automatic failover
+✅ Horizontal scalability
+✅ No single application region dependency
+
+
+🏗️ Architecture
+                         INTERNET
+                             │
+                             ▼
+                    Global Load Balancer
+                             │
+                ┌────────────┴────────────┐
+                │                         │
+                ▼                         ▼
+          REGION INDIA              REGION SINGAPORE
+                │                         │
+         ┌──────┴──────┐           ┌──────┴──────┐
+         ▼             ▼           ▼             ▼
+      Flask 1       Flask 2     Flask 1       Flask 2
+         │             │           │             │
+         └──────┬──────┘           └──────┬──────┘
+                │                         │
+                ▼                         ▼
+             Redis                     Redis
+                │                         │
+                └────────────┬────────────┘
+                             │
+                             ▼
+                       Event Streaming
+                           Kafka
+🛠️ Tech Stack
+
+For today's learning project:
+Python
+Flask
+Docker
+Redis
+NGINX
+Health checks
+
+For a real production deployment:
+
+Kubernetes
+Global Load Balancer
+Managed PostgreSQL/MySQL
+Redis Cluster
+Kafka
+Object Storage
+OpenTelemetry
+Prometheus
+
+
+📂 Project Structure
+multi-region-active-active/
+│
+├── region_a/
+│   └── app.py
+│
+├── region_b/
+│   └── app.py
+│
+├── nginx/
+│   └── nginx.conf
+│
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
